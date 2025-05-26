@@ -7,11 +7,11 @@ class Empresa {
 
   method profesionalesCaros() = profesionales.filter({p => p.honorarios() > honorarioReferencia})
 
-  method universidadesFormadoras() = profesionales.map({p => p.universidad()})
+  method universidadesFormadoras() = profesionales.map({p => p.universidad()}).asSet()
 
   method profesionalMasBarato() = profesionales.min({p => p.honorarios()})
 
-  method genteAcotada() = profesionales.all({p => p.provinciasQuePuedeTrabajar().size() <= 3})
+  method esDeGenteAcotada() = profesionales.all({p => p.provinciasQuePuedeTrabajar().size() <= 3})
 
   //Metodos de indicacion
   method agregarVariosProfesionales(listaProfesionales) {
@@ -21,7 +21,7 @@ class Empresa {
 
 
 //Profesionales
-class ProfesionalUniversitarios {
+class ProfesionalVinculado {
   const universidad
 
   method universidad() = universidad
@@ -43,6 +43,13 @@ class ProfesionalLibre {
   const provinciasQuePuedeTrabajar = #{}
 
   method universidad() = universidad
+  method honorarios() = honorarios
+  method provinciasQuePuedeTrabajar() = provinciasQuePuedeTrabajar
+
+  //Metodos de indicacion
+  method agregarLugaresDeTrabajo(listaLugares) {
+    provinciasQuePuedeTrabajar.addAll(listaLugares)
+  }
 }
 
 //Universidad
