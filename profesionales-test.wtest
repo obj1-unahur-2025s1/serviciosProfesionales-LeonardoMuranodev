@@ -1,4 +1,5 @@
 import profesionales.*
+import solicitantes.*
 describe "Test de la Parte 1"{
   
   //Universidades
@@ -40,5 +41,80 @@ describe "Test de la Parte 1"{
   test "De la empresa empresa1: no es de gente acotadaero si le agregamos a Luciana dos provincias más (p.ej. Corrientes y Misiones)" {
     luciana.agregarLugaresDeTrabajo(#{"Corrientes", "Misiones"})
     assert.notThat(empresa1.esDeGenteAcotada())
+  }
+}
+
+describe "Test de la parte 2" {
+  
+  //Universidades
+  const deSanMartin = new Universidad(provincia="Buenos Aires", honorariosRecomendados=3500)
+  const deRosario = new Universidad(provincia="Santa Fe", honorariosRecomendados=2800)
+  const deCorrientes = new Universidad(provincia="Corrientes", honorariosRecomendados=4200)
+  const deHurligham = new Universidad(provincia="Buenos Aires", honorariosRecomendados=8800)
+
+  //Profesionales
+  const juana = new ProfesionalVinculado (universidad=deRosario)
+  const melina = new ProfesionalesDelLitoral (universidad=deCorrientes)
+  const rocio = new ProfesionalLibre (universidad=deHurligham, honorarios=5000, provinciasQuePuedeTrabajar=#{"Santa Fe", "Cordoba", "Buenos Aires"})
+  const luciana = new ProfesionalLibre (universidad=deRosario, honorarios=3200, provinciasQuePuedeTrabajar=#{"Santa Fe", "Entre Rios"})
+  
+  //Personas
+  const pedro = new Persona (provinciaDondeVive="Buenos Aires")
+  const ana = new Persona (provinciaDondeVive="Salta")
+
+  //Instituciones
+  const academiaABC = new Institucion (universidadesQueReconoce= #{deHurligham, deCorrientes})
+  const centroXYZ = new Institucion (universidadesQueReconoce= #{deSanMartin})
+
+  //Clubes
+  const losDeportistas = new Club(provincias = #{"Santa Fe", "Cordoba"})
+  const elRecreo = new Club(provincias = #{"Chaco", "Mendoza"})
+
+  //Empresa
+  const solucionesIntegrales = new Empresa(honorarioReferencia=3500, profesionales=#{juana, melina, rocio, luciana})
+
+  test "Pedro solo puede ser atendido por Rocío" {
+    assert.notThat(pedro.puedeSerAtendido(juana))
+    assert.notThat(pedro.puedeSerAtendido(melina))
+    assert.that(pedro.puedeSerAtendido(rocio))
+    assert.notThat(pedro.puedeSerAtendido(luciana))
+  }
+
+  test "Academia ABC solo puede ser atendido por Melina y Rocío" {
+    assert.notThat(academiaABC.puedeSerAtendido(juana))
+    assert.that(academiaABC.puedeSerAtendido(melina))
+    assert.that(academiaABC.puedeSerAtendido(rocio))
+    assert.notThat(academiaABC.puedeSerAtendido(luciana))
+  }
+
+  test "Los deportistas pueden ser atendidos por todos" {
+    assert.that(losDeportistas.puedeSerAtendido(juana))
+    assert.that(losDeportistas.puedeSerAtendido(melina))
+    assert.that(losDeportistas.puedeSerAtendido(rocio))
+    assert.that(losDeportistas.puedeSerAtendido(luciana))
+  }
+
+  test "La Empresa Soluciones Integrales SÍ puede satisfacer a Pedro, ya que Rocío puede atenderlo" {
+    assert.that(solucionesIntegrales.puedeSatisfacer(pedro))
+  }
+
+  test "La Empresa Soluciones Integrales NO puede satisfacer a Ana" {
+    assert.notThat(solucionesIntegrales.puedeSatisfacer(ana))
+  }
+
+  test "La Empresa Soluciones Integrales SÍ puede satisfacer a academia ABC, ya que Melina y Rocío pueden atenderla" {
+    assert.that(solucionesIntegrales.puedeSatisfacer(academiaABC))
+  }
+
+  test "La Empresa Soluciones Integrales NO puede satisfacer a Centro XYZ" {
+    assert.notThat(solucionesIntegrales.puedeSatisfacer(centroXYZ))
+  }
+
+  test "La Empresa Soluciones Integrales SÍ puede satisfacer a los Deportistas, ya que toda la empresa pueden atenderlo" {
+    assert.that(solucionesIntegrales.puedeSatisfacer(losDeportistas))
+  }
+
+  test "La Empresa Soluciones Integrales NO puede satisfacer a el recreo" {
+    assert.notThat(solucionesIntegrales.puedeSatisfacer(elRecreo))
   }
 }

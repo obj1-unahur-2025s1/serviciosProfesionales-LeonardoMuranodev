@@ -13,6 +13,8 @@ class Empresa {
 
   method esDeGenteAcotada() = profesionales.all({p => p.provinciasQuePuedeTrabajar().size() <= 3})
 
+  method puedeSatisfacer(solicitante) = profesionales.any({p => solicitante.puedeSerAtendido(p)})
+
   //Metodos de indicacion
   method agregarVariosProfesionales(listaProfesionales) {
     profesionales.addAll(listaProfesionales)
