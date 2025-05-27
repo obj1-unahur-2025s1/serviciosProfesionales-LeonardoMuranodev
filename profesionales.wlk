@@ -62,6 +62,7 @@ class ProfesionalLibre {
   method universidad() = universidad
   method honorarios() = honorarios
   method provinciasQuePuedeTrabajar() = provinciasQuePuedeTrabajar
+  method dineroTotal() = dineroTotal
 
   //Metodos de indicacion
   method agregarLugaresDeTrabajo(listaLugares) {
@@ -86,6 +87,7 @@ class Universidad {
 
   method provincia() = provincia
   method honorariosRecomendados() = honorariosRecomendados
+  method recaudacion() = recaudacion
 
   //Metodos de indicacion
   method contribuirALaRecaudacion(dinero) {
@@ -95,6 +97,8 @@ class Universidad {
 
 object asociacionLitoral {
   var recaudacion = 0
+
+  method recaudacion() = recaudacion
 
   //Metodos de indicacion
   method contribuirALaRecaudacion(dinero) {

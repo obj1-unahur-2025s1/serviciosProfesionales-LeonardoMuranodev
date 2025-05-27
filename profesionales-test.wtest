@@ -118,3 +118,44 @@ describe "Test de la parte 2" {
     assert.notThat(solucionesIntegrales.puedeSatisfacer(elRecreo))
   }
 }
+
+describe "Test de la parte 3" {
+
+  //Universidades
+  const deSanMartin = new Universidad(provincia="Buenos Aires", honorariosRecomendados=3500)
+  const deRosario = new Universidad(provincia="Santa Fe", honorariosRecomendados=2800)
+  const deCorrientes = new Universidad(provincia="Corrientes", honorariosRecomendados=4200)
+  const deHurligham = new Universidad(provincia="Buenos Aires", honorariosRecomendados=8800)
+
+  //Profesionales
+  const juana = new ProfesionalVinculado (universidad=deRosario)
+  const melina = new ProfesionalesDelLitoral (universidad=deCorrientes)
+  const rocio = new ProfesionalLibre (universidad=deHurligham, honorarios=5000, provinciasQuePuedeTrabajar=#{"Santa Fe", "Cordoba", "Buenos Aires"})
+  const luciana = new ProfesionalLibre (universidad=deRosario, honorarios=3200, provinciasQuePuedeTrabajar=#{"Santa Fe", "Entre Rios"})
+
+  method initialize() {
+    juana.cobrarImporte(10000)
+    melina.cobrarImporte(7500)
+    rocio.cobrarImporte(15000)
+    luciana.cobrarImporte(20000)
+  }
+
+  test "Juana cobra 10000 y le da la mitad a La Universidad de Rosario (donde estudió Juana)" {
+    assert.equals(5000, deRosario.recaudacion())
+  }
+
+  test "Melina cobra 7500, La Asociación de Profesionales del Litoral debe haber registrado un total recaudado de $7500 " {
+    assert.equals(7500, asociacionLitoral.recaudacion())
+  }
+
+  test " Rocio cobra 15000, por lo que esa es la cant de dinero que tiene " {
+    assert.equals(15000, rocio.dineroTotal())
+  }
+
+  test "Luciana le pasa 10000 a Rocio, luciana tiene 10000 y rocio tiene 25000" {
+    luciana.transferirDineroA(rocio, 10000)
+    assert.equals(25000, rocio.dineroTotal())
+    assert.equals(10000, luciana.dineroTotal())
+  }
+
+}
