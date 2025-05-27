@@ -159,3 +159,67 @@ describe "Test de la parte 3" {
   }
 
 }
+
+describe "test de la parte 4 y desafio extra" {
+  //Universidades
+  const deSanMartin = new Universidad(provincia="Buenos Aires", honorariosRecomendados=3500)
+  const deRosario = new Universidad(provincia="Santa Fe", honorariosRecomendados=2800)
+  const deCorrientes = new Universidad(provincia="Corrientes", honorariosRecomendados=4200)
+  const deHurligham = new Universidad(provincia="Buenos Aires", honorariosRecomendados=8800)
+
+  //Profesionales
+  const juana = new ProfesionalVinculado (universidad=deRosario)
+  const melina = new ProfesionalesDelLitoral (universidad=deCorrientes)
+  const rocio = new ProfesionalLibre (universidad=deHurligham, honorarios=5000, provinciasQuePuedeTrabajar=#{"Santa Fe", "Cordoba", "Buenos Aires"})
+  const luciana = new ProfesionalLibre (universidad=deRosario, honorarios=3200, provinciasQuePuedeTrabajar=#{"Santa Fe", "Entre Rios"})
+  
+  //Personas
+  const pedro = new Persona (provinciaDondeVive="Buenos Aires")
+  const ana = new Persona (provinciaDondeVive="Salta")
+
+  //Instituciones
+  const academiaABC = new Institucion (universidadesQueReconoce= #{deHurligham, deCorrientes})
+  const centroXYZ = new Institucion (universidadesQueReconoce= #{deSanMartin})
+
+  //Clubes
+  const losDeportistas = new Club(provincias = #{"Santa Fe", "Cordoba"})
+  const elRecreo = new Club(provincias = #{"Chaco", "Mendoza"})
+
+  //Empresa
+  const solucionesIntegrales = new Empresa(honorarioReferencia=3500, profesionales=#{juana, melina, rocio, luciana})
+
+  method initialize() {
+    solucionesIntegrales.darServicio(pedro)
+  }
+
+  test "solucionesIntegrales le da el servicio a pedro. Rocío es el único profesional de la empresa que puede atenderlo. Cobra $5000 de honarios por hora" {
+    assert.equals(1, solucionesIntegrales.cantidadClientes())
+    assert.that(solucionesIntegrales.tieneDeClienteA(pedro))
+    assert.notThat(solucionesIntegrales.tieneDeClienteA(academiaABC))
+    assert.equals(5000, rocio.dineroTotal())
+  }
+
+  test "solucionesIntegrales le da el servicio a academiaABC. Rocío y Melina pueden atenderla. Cobra $5000 de honarios por hora" {
+    solucionesIntegrales.darServicio(academiaABC)
+    assert.equals(2, solucionesIntegrales.cantidadClientes())
+    assert.that(solucionesIntegrales.tieneDeClienteA(pedro))
+    assert.that(solucionesIntegrales.tieneDeClienteA(academiaABC))
+  }
+
+  test "solucionesIntegrales no le puede dar servicio a Centro XYZ. Se debe comprobar que los clietes no cambian" {
+    solucionesIntegrales.darServicio(academiaABC)
+    solucionesIntegrales.darServicio(centroXYZ)
+    assert.equals(2, solucionesIntegrales.cantidadClientes())
+    assert.that(solucionesIntegrales.tieneDeClienteA(pedro))
+    assert.that(solucionesIntegrales.tieneDeClienteA(academiaABC))
+    assert.notThat(solucionesIntegrales.tieneDeClienteA(centroXYZ))
+  }
+
+  test "Luciana es una empleada poco atractiva ya que Melina tiene honorarios mas baratos en Santa Fe y Entre Rios" {
+    assert.that(solucionesIntegrales.esProfesionalPocoAtractivo(luciana))
+  }
+
+  test "Rocio no es una empleada poco atractiva ya que en Cordoba y Bs As no hay otra profesional" {
+    assert.notThat(solucionesIntegrales.esProfesionalPocoAtractivo(rocio))
+  }
+}

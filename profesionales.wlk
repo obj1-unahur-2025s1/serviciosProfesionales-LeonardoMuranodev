@@ -1,6 +1,7 @@
 class Empresa {
   const profesionales = #{}
   const honorarioReferencia
+  const clientes = #{}
 
   //Metodos de consulta
   method cantProfesionalesQueEstudiaronEn(universidad) = profesionales.count({p => p.universidad() == universidad})
@@ -15,9 +16,35 @@ class Empresa {
 
   method puedeSatisfacer(solicitante) = profesionales.any({p => solicitante.puedeSerAtendido(p)})
 
+  method profesionalQuePuedenAtender(solicitante) = profesionales.filter({p => solicitante.puedeSerAtendido(p)})
+
+  method cantidadClientes() = clientes.size()
+
+  method tieneDeClienteA(solicitante) = clientes.contains(solicitante)
+
+  method profesionalesQueTrabajanEn(provincia) {
+    return profesionales.filter({p => p.provinciasQuePuedeTrabajar().contains(provincia)})
+  }
+
+  method esProfesionalPocoAtractivo(profesional) {
+    return profesional.provinciasQuePuedeTrabajar().all({p => 
+    self.profesionalesQueTrabajanEn(p).any({p => p.honorarios() < profesional.honorarios()})})
+  }
+
   //Metodos de indicacion
   method agregarVariosProfesionales(listaProfesionales) {
     profesionales.addAll(listaProfesionales)
+  }
+
+  method darServicio(solicitante) {
+    if (self.puedeSatisfacer(solicitante)) {
+      //Guardo un profesional que pueda atender al cliente
+      const profAtiende = self.profesionalQuePuedenAtender(solicitante).anyOne()
+      //Hago que cobre su honorario
+      profAtiende.cobrarImporte(profAtiende.honorarios())
+      //Lo agrego a clientes
+      clientes.add(solicitante)
+    }
   }
 }
 
